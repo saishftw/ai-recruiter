@@ -80,7 +80,7 @@ There are two ways to run the pipeline:
 ### 1. Run via Notebook (Google Colab)
 You can explore and visualize the entire scoring process interactively in a Jupyter notebook.
 
-> **[Run on Google Colab](https://your-colab-link-here)**
+> **[Run on Google Colab](https://colab.research.google.com/drive/1_KHLnPAZELhffVCuGwZBK6ZP9njoaAPg?usp=sharing)**
 
 No setup is required — the notebook handles loading, filtering, scoring, and explanation.
 
@@ -197,3 +197,41 @@ To validate the pipeline, I generated synthetic job descriptions using an LLM ba
 ├── requirements.txt
 ├── README.md
 ```
+---
+## Scalability & Improvement Plans
+
+To support larger candidate datasets and improve matching accuracy, the following enhancements are planned:
+
+### 1. Use a Vector Database for Embedding Search
+- **Current Limitation:** All semantic similarity scores are calculated in-memory, which is inefficient for large datasets.
+- **Improvement:** Store and index candidate profile embeddings in a vector database (e.g., FAISS, Weaviate, Qdrant, Pinecone) using an approximate nearest neighbor (ANN) algorithm like HNSW for fast similarity search.
+- **Benefit:** Scales semantic matching to hundreds of thousands of profiles with sub-second retrieval.
+
+### 2. Fine-tune the Embedding Model
+- **Current Limitation:** Generic sentence transformers may not capture nuances of hiring-specific language (e.g., skills vs responsibilities).
+- **Improvement:** Fine-tune the model on a domain-specific corpus of resumes and job descriptions to improve semantic alignment.
+- **Benefit:** More accurate ranking based on real-world hiring signals.
+
+### 3. Improve Fuzzy Matching Logic
+- **Standardize Inputs:**
+  - Normalize case, punctuation, plurals, and abbreviations.
+  - Map known synonyms or aliases (e.g., "JS" → "JavaScript").
+- **Leverage Token-Based Similarity:** Use token set/sort ratios (already in use via RapidFuzz) but consider hybrid approaches:
+  - **TF-IDF or BM25** for partial text blocks like responsibilities.
+  - **Levenshtein Distance or Jaccard Similarity** for structured comparisons (e.g., sets of skills).
+- **Skill Ontology or Taxonomy:** Introduce a lightweight skill taxonomy or embeddings to cluster similar skills (e.g., NumPy and pandas → Data Analysis).
+
+### 4. Caching and Preprocessing
+- **Improvement:** Cache preprocessed results (e.g., normalized degrees, embeddings) to reduce repeat computation during batch runs. I'm already storing the candidate profile embedding in the dataframe.
+- **Benefit:** Improves efficiency for both offline batch scoring and interactive filtering.
+
+### 5. Parallel Processing
+- **Improvement:** Use Python multiprocessing or vectorized NumPy operations for fuzzy and semantic scoring over large datasets.
+- **Benefit:** Speeds up evaluation significantly when scaling to tens of thousands of candidates.
+
+### 6. Batch Evaluation and Logging
+- Add support for:
+  - Evaluating against multiple JDs in one run.
+  - Logging top-N candidates with reasons (matched attributes, scores).
+  - Exporting evaluation results in a structured format (JSON/CSV).
+
