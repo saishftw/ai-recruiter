@@ -25,18 +25,18 @@ This system evaluates and ranks candidates against a given job description (JD) 
 Each candidate is scored based on the following criteria:
 
 - **Job Title Match**  
-  Compares the candidate’s current job title with the role specified in the JD using fuzzy string matching.
+  Compares the candidate's current job title with the role specified in the JD using fuzzy string matching.
 
 - **Skill Match**  
   Each skill in the JD is tagged with a priority level. Candidate skills are compared using fuzzy matching, and matches above a set threshold contribute to the skill score based on their importance.
 
 - **Qualification Match**  
-  JD-specified degrees and fields of study are normalized and matched against the candidate’s educational background. A valid match requires:
+  JD-specified degrees and fields of study are normalized and matched against the candidate's educational background. A valid match requires:
   - A normalized degree type match in the degree hierarchy
   - A field of study match above a defined fuzzy threshold
 
 - **Semantic Profile Match**  
-  The candidate’s entire profile is embedded using a sentence transformer and compared to the JD embedding using cosine similarity. This captures alignment in responsibilities, objectives, and experience.
+  The candidate's entire profile is embedded using a sentence transformer and compared to the JD embedding using cosine similarity. This captures alignment in responsibilities, objectives, and experience.
 
 
 ### Skill Matching Logic
@@ -49,7 +49,7 @@ Each candidate is scored based on the following criteria:
 
 - Degree names are normalized using a fuzzy matcher and mapped to standard categories (e.g., bachelor, master)
 - Fields of study are compared using fuzzy similarity
-- Matches are scored based on their presence and relevance in the candidate’s qualifications and degree hierarchy
+- Matches are scored based on their presence and relevance in the candidate's qualifications and degree hierarchy
 
 ### Semantic Matching
 
@@ -67,7 +67,7 @@ To evaluate these:
 Each candidate receives a normalized score for each component. These are combined into a final score that determines their overall suitability for the JD.
 
 The final output includes:
-- The candidate’s total score
+- The candidate's total score
 - Individual component scores (title, skill, qualification, semantic)
 - Matched skills and qualifications for transparency
 
@@ -75,14 +75,20 @@ The final output includes:
 
 ## Quick Start
 
-There are two ways to run the pipeline:
+There are two ways to run the pipeline locally:
 
-### 1. Run via Notebook (Google Colab)
+### 1. Run via Jupyter Notebook (Local)
 You can explore and visualize the entire scoring process interactively in a Jupyter notebook.
 
-> **[Run on Google Colab](https://colab.research.google.com/drive/1_KHLnPAZELhffVCuGwZBK6ZP9njoaAPg?usp=sharing)**
+```bash
+uv venv  # Create virtual environment using uv
+uv pip install -r requirements.txt
+uv pip install jupyter  # Install Jupyter if not already installed
 
-No setup is required — the notebook handles loading, filtering, scoring, and explanation.
+jupyter notebook
+```
+
+Open the notebook file and run the cells to explore the scoring process step-by-step. The first cell will prompt you to input a job description (JD) for candidate matching. No additional setup is required — the notebook handles loading, filtering, scoring, and explanation.
 
 ---
 
@@ -97,7 +103,7 @@ uv pip install -r requirements.txt
 uv run main.py
 ```
 
-Outputs the top-ranked candidates along with their scores and matched attributes.
+This will output the top-ranked candidates along with their scores and matched attributes.
 
 ---
 
@@ -148,17 +154,6 @@ GEMINI_API_KEY=your-key-here
 ```
 
 The project automatically loads this using `python-dotenv`.
-
-#### 3. For Colab Users
-
-In the Colab notebook, your key will be requested securely:
-
-```python
-from getpass import getpass
-import os
-
-os.environ['GEMINI_API_KEY'] = getpass('Enter your Gemini API key:')
-```
 
 ---
 
@@ -234,4 +229,3 @@ To support larger candidate datasets and improve matching accuracy, the followin
   - Evaluating against multiple JDs in one run.
   - Logging top-N candidates with reasons (matched attributes, scores).
   - Exporting evaluation results in a structured format (JSON/CSV).
-
