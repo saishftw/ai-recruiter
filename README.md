@@ -125,6 +125,43 @@ pip install -r requirements.txt
 
 ---
 
+### 🔑 Google Gemini API Key
+
+This project uses the **Gemini API** from Google AI Studio for tasks like semantic JD generation and evaluation.
+
+#### 1. Get Your API Key
+- Sign in at [Google AI Studio](https://aistudio.google.com/app/apikey)
+- Generate an API key (free tier available)
+
+#### 2. Add the Key to Your Environment
+
+Rename the `.env.example` file to `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Then, open `.env` and add your key:
+
+```
+GEMINI_API_KEY=your-key-here
+```
+
+The project automatically loads this using `python-dotenv`.
+
+#### 3. For Colab Users
+
+In the Colab notebook, your key will be requested securely:
+
+```python
+from getpass import getpass
+import os
+
+os.environ['GEMINI_API_KEY'] = getpass('Enter your Gemini API key:')
+```
+
+---
+
 ### Run Tests
 
 ```bash
